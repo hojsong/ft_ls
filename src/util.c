@@ -85,16 +85,23 @@ size_t    num_size(int num){
 
 
 void printTime(time_t modTime) {
-    // ctime() 함수를 사용하여 time_t 값을 문자열로 변환
     char *timeString = ctime(&modTime);
-    
-    // ctime()에서 반환된 문자열은 개행 문자를 포함하므로 이를 제거
-    size_t len = strlen(timeString);
-    if (len > 0 && timeString[len - 1] == '\n') {
-        timeString[len - 1] = ' ';
+    char *dest;
+    size_t len = ft_strlen(timeString);
+    size_t x;
+
+    x = 0;
+    while (x < 9){
+        timeString[len - x] = '\0';
+        x++;
     }
-    // STDOUT_FILENO를 사용하여 표준 출력에 시간 문자열을 출력
-    write(1, timeString, strlen(timeString));
+
+    dest = ft_replace(timeString, 4);
+
+    if(dest)
+        write(1, dest, ft_strlen(dest));
+    else
+        write(1, timeString, ft_strlen(timeString));
 }
 
 char    **addDir(char **dir, char *nowdir, char *d_name, size_t idx){
@@ -110,7 +117,7 @@ char    **addDir(char **dir, char *nowdir, char *d_name, size_t idx){
         result[i] = ft_strdup(dir[i]);
         i++;
     }
-    result[i] = ft_strjoin(nowdir, d_name);
+    result[i] = ft_pathjoin(nowdir, d_name);
     i++;
     while(i < idx){ 
         result[i] = ft_strdup(dir[i]);

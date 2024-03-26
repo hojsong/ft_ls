@@ -26,7 +26,24 @@ int     ft_strcmp(char *str1, char *str2){
     return (0);
 }
 
-char    *ft_strjoin(char *str1, char *str2){
+char    *ft_replace(char *str, size_t n){
+    char    *result;
+    size_t i, size;
+
+    size = ft_strlen(str);
+    i = n;
+    result = malloc(sizeof(char) * (size - i + 1));
+    if (result == NULL)
+        return NULL;
+    while (i < size){
+        result[i - n] = str[i];
+        i++;
+    }
+    result[i - n] = '\0';
+    return result;
+}
+
+char    *ft_pathjoin(char *str1, char *str2){
     char    *result;
     size_t  s1;
     size_t  s2;

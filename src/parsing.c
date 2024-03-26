@@ -79,7 +79,7 @@ char **Rdircheck(char *dir, t_flags flags){
     if(ft_strcmp(dir, ".") == 0)
         result[0] = ft_strdup(dir);
     else 
-        result[0] = ft_strjoin(".", dir);
+        result[0] = ft_pathjoin(".", dir);
     result[1] = NULL;
     if (flags.R == 0){
         return result;
@@ -90,7 +90,7 @@ char **Rdircheck(char *dir, t_flags flags){
         struct dirent *obj = readdir(ds);
         if(obj == NULL)
             break;
-        str = ft_strjoin(result[0], obj->d_name);
+        str = ft_pathjoin(result[0], obj->d_name);
         if (stat(str, &buf) == 0){
             if (lstat(str, &buf) == 0) {
                 if (S_ISLNK(buf.st_mode)) {    
@@ -143,7 +143,7 @@ void dir_sort(char **dir, t_flags flags){
                 struct dirent *obj = readdir(ds);
                 if(obj == NULL)
                     break;
-                str = ft_strjoin(dir[idx],obj->d_name);
+                str = ft_pathjoin(dir[idx],obj->d_name);
                 if (stat(str, &buf) == 0){
                     if(ft_strcmp(obj->d_name, ".") == 0){
                         maxtime[idx] = buf.st_mtime;

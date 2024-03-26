@@ -16,7 +16,7 @@ size_t size_check(char *dir, t_flags flags){
         struct dirent *obj = readdir(ds);
         if(obj == NULL)
             break;
-        str = ft_strjoin(dir, obj->d_name);
+        str = ft_pathjoin(dir, obj->d_name);
         if (stat(str, &buf) == 0){
             if(flags.a == 0 && obj->d_name[0] == '.'){
                 continue ;
@@ -93,9 +93,16 @@ t_item *stat_List(char *dir, t_flags flags, size_t size, size_t *total){
         struct dirent *obj = readdir(ds);
         if(obj == NULL)
             break;
-        str = ft_strjoin(dir, obj->d_name);
+        str = ft_pathjoin(dir, obj->d_name);
         if (stat(str, &buf) == 0){
-            *total += buf.st_blocks;
+            if (lstat(str, &buf) == 0){
+               if (S_ISLNK(buf.st_mode)){   
+                    *total += 8;
+               }
+                else {
+                    *total += buf.st_blocks;
+                }
+            }
             if(flags.a == 0 && obj->d_name[0] == '.'){
                 continue ;
             }    
@@ -171,7 +178,7 @@ void ls_execute(char *dir, t_flags flags){
     while(idx < size - 1){
         if(flags.l == 1){
             ll = idx;
-            str = ft_strjoin(dir, items[ll].name);
+            str = ft_pathjoin(dir, items[ll].name);
             printPermissions(items[ll].status.st_mode, str, &items[ll].status);
             write(1, " ", 1);
             al = 0;
@@ -225,7 +232,7 @@ void ls_execute(char *dir, t_flags flags){
         }
         idx++;
     }
-    if((idx) % (size / lc) != 0)
+    if((idx) % (size / lc) != 0 && flags.R == 1 && flags.l == 0)
         write(1, "\n", 1);
     free(items);
 }
