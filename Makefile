@@ -2,18 +2,8 @@ CC = cc
 CFLAG = -Wall -Wextra -Werror
 NAME = ft_ls
 HEAD = header/
-SRCS = src/main.c src/parsing.c src/libft.c src/util.c
+SRCS = src/main.c src/parsing.c src/libft.c src/util.c src/execute.c
 OBJS = $(SRCS:.c=.o)
-
-# OS := $(shell uname)
-
-# ifeq ($(OS), Darwin)
-#     # macOS
-#     SRCS += src/macPrint.c
-# else ifeq ($(OS), Linux)
-#     # Linux
-#     SRCS += src/linuxPrint.c
-# endif
 
 all : $(NAME)
 	
