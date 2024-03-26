@@ -13,7 +13,7 @@ void process_directory(char *dir_path, t_flags flags, size_t idx, size_t size) {
             put_str_fd(1,":\n");
         }
         ls_execute(dir2[i], flags);
-        if(dir2[i + 1])
+        if(idx != 0 || dir2[i + 1])
             write(1,"\n",1);
         if(i != 0)
             process_directory(dir2[i], flags, 1, 0);
@@ -32,9 +32,12 @@ int main(int argc, char **argv) {
     dir_sort(dir, flags);
     while (dir[idx] && dir) {
         process_directory(dir[idx], flags, 0, dir_size(dir));
+        if (dir[idx + 1])
+            write(1, "\n", 1);
         idx++;
     }
     strAllfree(dir);
+    // system("leaks ft_ls");
 }
 
 
@@ -67,5 +70,4 @@ int main(int argc, char **argv) {
 //         idx++;
 //     }
 //     strAllfree(dir);
-//     // system("leaks ft_ls");
 // }

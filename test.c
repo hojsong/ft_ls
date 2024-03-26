@@ -53,7 +53,7 @@ void printTime(time_t modTime) {
     char *timeString = ctime(&modTime);
     
     // ctime()에서 반환된 문자열은 개행 문자를 포함하므로 이를 제거
-    size_t len = strlen(timeString);
+    size_t len = ft_strlen(timeString);
     if (len > 0 && timeString[len - 1] == '\n') {
         timeString[len - 1] = ' ';
     }

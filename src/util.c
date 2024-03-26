@@ -83,6 +83,7 @@ size_t    num_size(int num){
     return i;
 }
 
+
 void printTime(time_t modTime) {
     // ctime() 함수를 사용하여 time_t 값을 문자열로 변환
     char *timeString = ctime(&modTime);
@@ -120,11 +121,23 @@ char    **addDir(char **dir, char *nowdir, char *d_name, size_t idx){
     return (result);
 }
 
-void printPermissions(mode_t mode) {
+void printPermissions(mode_t mode, char *str, struct stat *buf) {
     char permissions[11] = "---------- "; // 기본 권한 문자열 초기화
     permissions[10] = ' '; // 마지막에 공백 추가
 
-    if (S_ISDIR(mode)) permissions[0] = 'd';
+    if (lstat(str, buf) == 0){
+        if (S_ISLNK(buf->st_mode)){   
+            permissions[0] = 'l';
+            char link_target[1024];
+            ssize_t len = readlink(str, link_target, sizeof(link_target)-1);
+            if (len != -1) {
+                buf->st_size = len;
+                buf->st_nlink = 1;
+            }
+        }
+        else if (S_ISDIR(mode))
+            permissions[0] = 'd';
+    }
     if (mode & S_IRUSR) permissions[1] = 'r';
     if (mode & S_IWUSR) permissions[2] = 'w';
     if (mode & S_IXUSR) permissions[3] = 'x';

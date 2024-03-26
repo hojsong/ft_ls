@@ -33,7 +33,7 @@ void    ft_invalid_option();
 char    **addDir(char **dir, char *nowdir, char *d_name, size_t idx);
 char    **Rdircheck(char *dir, t_flags flags);
 void    ls_execute(char *dir, t_flags flags);
-void    printPermissions(mode_t mode);
+void printPermissions(mode_t mode, char *str, struct stat *buf);
 void    strAllfree(char **str);
 void    printTime(time_t modTime);
 size_t    num_size(int num);

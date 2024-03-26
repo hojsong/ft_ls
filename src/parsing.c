@@ -116,7 +116,7 @@ char **Rdircheck(char *dir, t_flags flags){
 }
 
 void dir_sort(char **dir, t_flags flags){
-    int  idx;
+    int  idx, dest;
     int  size;
     DIR     *ds;
     long  *maxtime;
@@ -187,8 +187,18 @@ void dir_sort(char **dir, t_flags flags){
                 swapdir = dir[i];
                 dir[i] = dir[i + 1];
                 dir[i + 1] = swapdir;
-                }
+            }
             i--;
         }
+    }
+    if (flags.r == 0)
+        return ;
+    idx = 1;
+    dest = 0;
+    while (idx < (size + 1/ 2)){
+        swapdir = dir[idx];
+        dir[idx] = dir[size - idx - dest];
+        dir[size - idx - dest] = swapdir;
+        idx++;
     }
 }
