@@ -24,26 +24,39 @@ typedef struct item{
     char        *name;
     int         type;
     struct stat status;
+    char        *str1;
+    char        *str2;
 } t_item;
 
 
-char    *ft_replace(char *str, size_t n);
-void process_directory(char *dir_path, const t_flags flags, size_t idx, size_t size);
-char    **flag_checker(int argc, char **argv, t_flags *flags);
-size_t ft_strlen(const char* str);
-size_t  dir_size(char **dir);
-void    ft_invalid_option();
-char    **addDir(char **dir, char *nowdir, char *d_name, size_t idx);
-char    **Rdircheck(char *dir, t_flags flags);
-void    ls_execute(char *dir, t_flags flags);
-void printPermissions(mode_t mode, char *str, struct stat *buf);
-void    strAllfree(char **str);
-void    printTime(time_t modTime);
-size_t    num_size(int num);
-void    put_num_fd(int fd, int num);
-void    put_str_fd(int fd, char *str);
-int     ft_strcmp(char *str1, char *str2);
-char    *ft_pathjoin(char *str1, char *str2);
-char    *ft_strdup(char *str);
-void    dir_sort(char **dir, t_flags flags);
-struct dirent **reObj(struct dirent **re,  struct dirent *obj);
+size_t          size_check(char *dir, t_flags flags);
+t_item          set_StatAndName(struct stat buf, char *name);
+void            sort_item(t_item *items, size_t size, t_flags flags);
+t_item          *stat_List(char *dir, t_flags flags, size_t size, size_t *total, size_t *si);
+void            items_revers(t_item *items, size_t size);
+void            item_execve(t_item *items, t_flags flags, size_t item_size, size_t *si);
+void            ls_execute(char *dir, t_flags flags);
+
+size_t          ft_strlen(const char* str);
+int             ft_strcmp(char *str1, char *str2);
+char            *ft_replace(char *str, size_t n);
+char            *ft_pathjoin(char *str1, char *str2);
+char            *ft_strdup(char *str);
+
+char            **opendirChecker(char **dir, t_flags flags);
+void            process_directory(char *dir_path, t_flags flags, size_t idx, size_t size) ;
+
+void            ft_invalid_option();
+char            **flag_checker(int argc, char **argv, t_flags *flags);
+size_t          dir_size(char **dir);
+char            **Rdircheck(char *dir, t_flags flags);
+void            dir_sort(char **dir, t_flags flags);
+
+struct dirent    **reObj(struct dirent **re,     struct dirent *obj);
+void            strAllfree(char **str);
+void            put_str_fd(int fd, char *str);
+void            put_num_fd(int fd, int num);
+size_t          num_size(int num);
+void            printTime(time_t modTime) ;
+char            **addDir(char **dir, char *nowdir, char *d_name, size_t idx);
+void            printPermissions(mode_t mode, char *str, struct stat *buf) ;

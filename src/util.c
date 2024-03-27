@@ -98,8 +98,10 @@ void printTime(time_t modTime) {
 
     dest = ft_replace(timeString, 4);
 
-    if(dest)
+    if(dest){
         write(1, dest, ft_strlen(dest));
+        free(dest);
+    }
     else
         write(1, timeString, ft_strlen(timeString));
 }
