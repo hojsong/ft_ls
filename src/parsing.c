@@ -14,7 +14,7 @@ char **flag_checker(int argc, char **argv, t_flags *flags){
     flags->a = 0;
     flags->l = 0;
     flags->R = 0;
-    flags->r = 0;
+    flags->x = 0;
     flags->t = 0;
     i = 1;
     while(i < argc){
@@ -26,10 +26,12 @@ char **flag_checker(int argc, char **argv, t_flags *flags){
                     flags->a = 1;
                 else if(argv[i][y] == 'l')
                     flags->l = 1;
-                else if(argv[i][y] == 'R')
+                else if(argv[i][y] == 'R'){
                     flags->R = 1;
-                else if(argv[i][y] == 'r')
-                    flags->r = 1;
+                }
+                else if(argv[i][y] == 'r'){
+                    flags->x = 1;
+                }
                 else if(argv[i][y] == 't')
                     flags->t = 1;
                 else
@@ -121,21 +123,20 @@ void dir_sort(char **dir, t_flags flags){
     DIR     *ds;
     long  *maxtime;
     struct stat buf;
-    struct stat buf2[3];
     char    *swapdir;
     char    *str;
     long  swaptime;
-
 
     size = (int)dir_size(dir);
     if (size < 2)
         return ;
     idx = 0;
     if(flags.t == 1){
-        maxtime = malloc(sizeof(long) * (size + 1));
+        maxtime = malloc(sizeof(long) * (size));
         while (dir && dir[idx]){
             ds = opendir(dir[idx]);
             if(ds == NULL){
+                maxtime[idx] = 0;
                 idx++;
                 continue;
             }
@@ -147,7 +148,9 @@ void dir_sort(char **dir, t_flags flags){
                 if (stat(str, &buf) == 0){
                     if(ft_strcmp(obj->d_name, ".") == 0){
                         maxtime[idx] = buf.st_mtime;
-                        buf2[idx] = buf;
+                        free(str);
+                        str = NULL;
+                        break;
                     }
                 }
                 free(str);
@@ -157,9 +160,10 @@ void dir_sort(char **dir, t_flags flags){
             idx++;
         }
         idx = 0;
+        dest = 0;
         while (++idx < size){
             int i = idx - 1;
-            while (i >= 0){
+            while (i >= 1){
                 if(maxtime[i] < maxtime[i + 1]){
                     swapdir = dir[i];
                     swaptime = maxtime[i];
@@ -175,8 +179,8 @@ void dir_sort(char **dir, t_flags flags){
                     dir[i] = dir[i + 1];
                     dir[i + 1] = swapdir;
                 }
+                i--;
             }
-            i--;        
         }
         free(maxtime);
     }
@@ -191,10 +195,17 @@ void dir_sort(char **dir, t_flags flags){
             i--;
         }
     }
-    if (flags.r == 0)
+    if (flags.x != 1 || size <= 2){
         return ;
-    idx = 1;
-    dest = 0;
+    }
+    if(ft_strcmp(dir[0], ".") == 0){
+        idx = 1;
+        dest = 0;
+    }
+    else{
+        idx = 0;
+        dest = 1;
+    }
     while (idx < (size + 1/ 2)){
         swapdir = dir[idx];
         dir[idx] = dir[size - idx - dest];

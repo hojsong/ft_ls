@@ -92,7 +92,7 @@ void printTime(time_t modTime) {
 
     x = 0;
     while (x < 9){
-        timeString[len - x] = '\0';
+        timeString[len - x - 1] = '\0';
         x++;
     }
 

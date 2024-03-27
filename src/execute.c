@@ -1,6 +1,7 @@
 #include "../header/ft_ls.h"
 
 size_t si[5];
+int cal = 1;
 
 size_t size_check(char *dir, t_flags flags){
     char *str;
@@ -52,12 +53,21 @@ void    sort_item(t_item *items, size_t size, t_flags flags){
                     items[i + 1] = swapitem;
                 }
                 else if(items[i].status.st_mtime > items[i + 1].status.st_mtime){
+                    ;
                 }
-                else if(items[i].status.st_mtime == items[i + 1].status.st_mtime && ft_strcmp(items[i].name, items[i + 1].name) > 0){
+                else if(items[i].status.st_mtime == items[i + 1].status.st_mtime 
+                    && ft_strcmp(items[i].name , items[i+1].name) > 0){
                     swapitem = items[i];
                     items[i] = items[i + 1];
                     items[i + 1] = swapitem;
                 }
+                // else if(items[i].status.st_mtime == items[i + 1].status.st_mtime && 
+                //     items[i].status.st_ctime == items[i + 1].status.st_ctime
+                //     && ft_strcmp(items[i].name , items[i+1].name) < 0){
+                //         swapitem = items[i];
+                //         items[i] = items[i + 1];
+                //         items[i + 1] = swapitem;
+                // }
             }
             else {
                 if(ft_strcmp(items[i].name, items[i + 1].name) > 0){
@@ -98,8 +108,10 @@ t_item *stat_List(char *dir, t_flags flags, size_t size, size_t *total){
             if (lstat(str, &buf) == 0){
                if (S_ISLNK(buf.st_mode)){   
                     *total += 8;
+                    result[idx].type = 1;
                }
                 else {
+                    result->type = 0;
                     *total += buf.st_blocks;
                 }
             }
@@ -169,11 +181,11 @@ void ls_execute(char *dir, t_flags flags){
         put_num_fd(1, total);
         write(1, "\n", 1);
     }
-    if(flags.r == 1){
+    if(flags.x == 1){
         items_revers(items, size);
     }
     size++;
-    lc = size / 2;
+    lc = size / cal;
     idx = 0;
     while(idx < size - 1){
         if(flags.l == 1){
@@ -204,6 +216,7 @@ void ls_execute(char *dir, t_flags flags){
             put_num_fd(1, items[ll].status.st_size);
             put_str_fd(1, "  ");
             printTime(items[ll].status.st_mtime);
+            put_str_fd(1, " ");
             put_str_fd(1, items[ll].name);
             if (lstat(str, &items[ll].status) == 0) {
                 if (S_ISLNK(items[ll].status.st_mode)) {

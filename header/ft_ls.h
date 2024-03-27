@@ -15,19 +15,20 @@
 typedef struct flags{
     int a;
     int l;
-    int r;
+    int x;
     int R;
     int t;
 } t_flags;
 
 typedef struct item{
     char        *name;
+    int         type;
     struct stat status;
 } t_item;
 
 
 char    *ft_replace(char *str, size_t n);
-void process_directory(char *dir_path, t_flags flags, size_t idx, size_t size);
+void process_directory(char *dir_path, const t_flags flags, size_t idx, size_t size);
 char    **flag_checker(int argc, char **argv, t_flags *flags);
 size_t ft_strlen(const char* str);
 size_t  dir_size(char **dir);
