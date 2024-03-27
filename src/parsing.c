@@ -198,17 +198,11 @@ void dir_sort(char **dir, t_flags flags){
     if (flags.x != 1 || size <= 2){
         return ;
     }
-    if(ft_strcmp(dir[0], ".") == 0){
-        idx = 1;
-        dest = 0;
-    }
-    else{
-        idx = 0;
-        dest = 1;
-    }
-    while (idx < (size + 1/ 2)){
-        swapdir = dir[idx];
-        dir[idx] = dir[size - idx - dest];
+    idx = 0;
+    dest = 1;
+    while (idx < (size  / 2)){
+        swapdir = dir[idx + dest];
+        dir[idx + dest] = dir[size - idx - dest];
         dir[size - idx - dest] = swapdir;
         idx++;
     }

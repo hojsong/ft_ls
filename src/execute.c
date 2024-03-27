@@ -214,7 +214,7 @@ void ls_execute(char *dir, t_flags flags){
             while (num_size(items[ll].status.st_size) + al++ < si[3])
                 write(1, " ", 1);
             put_num_fd(1, items[ll].status.st_size);
-            put_str_fd(1, "  ");
+            put_str_fd(1, " ");
             printTime(items[ll].status.st_mtime);
             put_str_fd(1, " ");
             put_str_fd(1, items[ll].name);
