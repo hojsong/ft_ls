@@ -109,14 +109,25 @@ char    **opendirChecker(char **dir, t_flags flags){
 void process_directory(char *dir_path, t_flags flags, size_t idx, size_t size) {
     char **dir2;
     size_t i;
+    char *str;
 
     i = idx;
     dir2 = Rdircheck(dir_path, flags);
-    dir_sort(dir2, flags);
+    dir_sort(dir2, flags, 1);
     while (dir2 && dir2[i]){
         if (size != 1 || i != 0){
-            put_str_fd(1, dir2[i]);
+            if (i == 0 && ft_strcmp(dir2[i], "."))
+                str = ft_replace(dir2[i], 2);
+            else
+                str = ft_strdup(dir2[i]);
+            put_str_fd(1, str);
+            // put_num_fd(1, idx);
+            // put_str_fd(1," ");
+            // put_num_fd(1, size);
+            // put_str_fd(1," ");
+            // put_num_fd(1, i);
             put_str_fd(1,":\n");
+            free(str);
         }
         ls_execute(dir2[i], flags);
         if((idx != 0 || dir2[i + 1]))
@@ -140,7 +151,7 @@ int main(int argc, char **argv) {
         strAllfree(dir);
         return(0);
     }
-    dir_sort(dir2, flags);
+    dir_sort(dir2, flags, 0);
     while (dir2[idx] && dir2) {
         process_directory(dir2[idx], flags, 0, dir_size(dir2));
         if (dir2[idx + 1])

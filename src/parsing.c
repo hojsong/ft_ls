@@ -1,8 +1,9 @@
 #include "../header/ft_ls.h"
 
 void ft_invalid_option(){
-    printf("ls: invalid options\n");
-    exit (0);
+    put_str_fd(2, "ls: invalid options\n");
+    put_str_fd(2, "usage: ls [- a l r t R]\n");
+    exit (1);
 }
 
 char **flag_checker(int argc, char **argv, t_flags *flags){
@@ -26,12 +27,10 @@ char **flag_checker(int argc, char **argv, t_flags *flags){
                     flags->a = 1;
                 else if(argv[i][y] == 'l')
                     flags->l = 1;
-                else if(argv[i][y] == 'R'){
+                else if(argv[i][y] == 'R')
                     flags->R = 1;
-                }
-                else if(argv[i][y] == 'r'){
+                else if(argv[i][y] == 'r')
                     flags->x = 1;
-                }
                 else if(argv[i][y] == 't')
                     flags->t = 1;
                 else
@@ -117,7 +116,7 @@ char **Rdircheck(char *dir, t_flags flags){
     return result;
 }
 
-void dir_sort(char **dir, t_flags flags){
+void dir_sort(char **dir, t_flags flags, int its){
     int  idx, dest;
     int  size;
     DIR     *ds;
@@ -160,10 +159,12 @@ void dir_sort(char **dir, t_flags flags){
             idx++;
         }
         idx = 0;
-        dest = 0;
+        dest = 1;
         while (++idx < size){
             int i = idx - 1;
-            while (i >= 1){
+            if (its == 0)
+                dest = 0;
+            while (i >= dest){
                 if(maxtime[i] < maxtime[i + 1]){
                     swapdir = dir[i];
                     swaptime = maxtime[i];
@@ -184,26 +185,38 @@ void dir_sort(char **dir, t_flags flags){
         }
         free(maxtime);
     }
-    while (++idx < size){
-        int i = idx - 1;
-        while (i >= 0){
-            if(ft_strcmp(dir[i], dir[i + 1]) > 0){
-                swapdir = dir[i];
-                dir[i] = dir[i + 1];
-                dir[i + 1] = swapdir;
+    else {
+        while (++idx < size){
+            int i = idx - 1;
+            while (i >= 0){
+                if(ft_strcmp(dir[i], dir[i + 1]) > 0){
+                    swapdir = dir[i];
+                    dir[i] = dir[i + 1];
+                    dir[i + 1] = swapdir;
+                }
+                i--;
             }
-            i--;
         }
     }
-    if (flags.x != 1 || size <= 2){
+    if (flags.x != 1 || size < 2){
         return ;
     }
     idx = 0;
     dest = 1;
-    while (idx < (size  / 2)){
-        swapdir = dir[idx + dest];
-        dir[idx + dest] = dir[size - idx - dest];
-        dir[size - idx - dest] = swapdir;
-        idx++;
+    if (its == 0){
+        while (idx < (size  / 2)){
+            swapdir = dir[idx];
+            dir[idx] = dir[size - idx - dest];
+            dir[size - idx - dest] = swapdir;
+            idx++;
+        }
+    }
+    else {
+        while (idx < (size  / 2)){
+            swapdir = dir[idx + dest];
+            dir[idx + dest] = dir[size - idx - dest];
+            dir[size - idx - dest] = swapdir;
+            idx++;
+        }
     }
 }

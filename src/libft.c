@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   libft.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hojsong <hojsong@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/29 20:47:28 by hojsong           #+#    #+#             */
+/*   Updated: 2024/03/29 20:57:10 by hojsong          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../header/ft_ls.h"
 
 size_t ft_strlen(const char* str){
@@ -15,13 +27,21 @@ size_t ft_strlen(const char* str){
 int     ft_strcmp(char *str1, char *str2){
     size_t i;
 
+    if(str1 == NULL || str2 == NULL){
+        if (str1 == NULL && str2)
+            return (-str2[0]);
+        else if (str2 == NULL && str1)
+            return (str1[0]);
+        else
+            return (1);
+    }
     i = 0;
-    while (str1[i] || str2[i]){
+    while (str1[i] && str2[i]){
         if (str1[i] != str2[i])
             return(str1[i] - str2[i]);
         i++;
     }
-    if (str1[i] != str2[i])
+    if (str1[i] || str2[i])
         return(str1[i] - str2[i]);
     return (0);
 }

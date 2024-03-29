@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   util.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hojsong <hojsong@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/29 20:39:22 by hojsong           #+#    #+#             */
+/*   Updated: 2024/03/29 20:48:50 by hojsong          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../header/ft_ls.h"
 
 struct dirent **reObj(struct dirent **re,  struct dirent *obj){
@@ -131,8 +143,8 @@ char    **addDir(char **dir, char *nowdir, char *d_name, size_t idx){
 }
 
 void printPermissions(mode_t mode, char *str, struct stat *buf) {
-    char permissions[11] = "---------- "; // 기본 권한 문자열 초기화
-    permissions[10] = ' '; // 마지막에 공백 추가
+    char permissions[11] = "---------- ";
+    permissions[10] = ' ';
 
     if (lstat(str, buf) == 0){
         if (S_ISLNK(buf->st_mode)){   
@@ -157,6 +169,5 @@ void printPermissions(mode_t mode, char *str, struct stat *buf) {
     if (mode & S_IWOTH) permissions[8] = 'w';
     if (mode & S_IXOTH) permissions[9] = 'x';
 
-    // STDOUT_FILENO는 표준 출력을 나타내는 파일 디스크립터입니다.
     write(STDOUT_FILENO, permissions, sizeof(permissions));
 }

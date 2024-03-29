@@ -50,7 +50,7 @@ void            ft_invalid_option();
 char            **flag_checker(int argc, char **argv, t_flags *flags);
 size_t          dir_size(char **dir);
 char            **Rdircheck(char *dir, t_flags flags);
-void            dir_sort(char **dir, t_flags flags);
+void            dir_sort(char **dir, t_flags flags, int its);
 
 struct dirent    **reObj(struct dirent **re,     struct dirent *obj);
 void            strAllfree(char **str);
