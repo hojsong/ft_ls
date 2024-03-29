@@ -152,6 +152,10 @@ int main(int argc, char **argv) {
         return(0);
     }
     dir_sort(dir2, flags, 0);
+    if(dir_size(dir) != dir_size(dir2)){
+        put_str_fd(1,dir2[0]);
+        put_str_fd(1,":\n");
+    }
     while (dir2[idx] && dir2) {
         process_directory(dir2[idx], flags, 0, dir_size(dir2));
         if (dir2[idx + 1])
