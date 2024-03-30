@@ -12,6 +12,7 @@ char    **opendirChecker(char **dir, t_flags flags){
     size_t si[5];
 
     redir = NULL;
+    items = NULL;
     dir_resize = 0;
     item_size = 0;
     idx = 0;
@@ -22,9 +23,9 @@ char    **opendirChecker(char **dir, t_flags flags){
                 item_size++;
             }
             else{
-                put_str_fd(1,"ls: ");
-                put_str_fd(1, dir[idx]);
-                put_str_fd(1,": No such file or directory\n");
+                put_str_fd(2,"ls: ");
+                put_str_fd(2, dir[idx]);
+                put_str_fd(2,": No such file or directory\n");
             }
         }
         else {
@@ -92,7 +93,7 @@ char    **opendirChecker(char **dir, t_flags flags){
         }
         idx++;
     }
-    if(redir)
+    if(dir_resize != 0)
         redir[didx] = NULL;
     if (items){
         sort_item(items, item_size, flags);
@@ -103,34 +104,25 @@ char    **opendirChecker(char **dir, t_flags flags){
         write(1, "\n", 1);
         free(items);
     }
+    if(dir_size(dir) != dir_resize)
+        write(1, "\n", 1);
     return redir;
 }
 
 void process_directory(char *dir_path, t_flags flags, size_t idx, size_t size) {
     char **dir2;
     size_t i;
-    char *str;
 
     i = idx;
     dir2 = Rdircheck(dir_path, flags);
     dir_sort(dir2, flags, 1);
     while (dir2 && dir2[i]){
-        if (size != 1 || i != 0){
-            if (i == 0 && ft_strcmp(dir2[i], "."))
-                str = ft_replace(dir2[i], 2);
-            else
-                str = ft_strdup(dir2[i]);
-            put_str_fd(1, str);
-            // put_num_fd(1, idx);
-            // put_str_fd(1," ");
-            // put_num_fd(1, size);
-            // put_str_fd(1," ");
-            // put_num_fd(1, i);
+        if (i != 0){
+            put_str_fd(1, dir2[i]);
             put_str_fd(1,":\n");
-            free(str);
         }
         ls_execute(dir2[i], flags);
-        if((idx != 0 || dir2[i + 1]))
+        if((size == 0 || dir2[i + 1]))
             write(1,"\n",1);
         if(i != 0)
             process_directory(dir2[i], flags, 1, 0);
@@ -152,11 +144,11 @@ int main(int argc, char **argv) {
         return(0);
     }
     dir_sort(dir2, flags, 0);
-    if(dir_size(dir) != dir_size(dir2)){
-        put_str_fd(1,dir2[0]);
-        put_str_fd(1,":\n");
-    }
     while (dir2[idx] && dir2) {
+        if(dir_size(dir) != dir_size(dir2)){
+            put_str_fd(1,dir2[idx]);
+            put_str_fd(1,":\n");
+        }
         process_directory(dir2[idx], flags, 0, dir_size(dir2));
         if (dir2[idx + 1])
             write(1, "\n", 1);
