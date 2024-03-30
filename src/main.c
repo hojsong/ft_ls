@@ -20,7 +20,10 @@ char    **opendirChecker(char **dir, t_flags flags){
         ds = opendir(dir[idx]);
         if(ds == NULL){
             if(stat(dir[idx], &buf) == 0){
-                item_size++;
+                if(S_ISDIR(buf.st_mode))
+                    dir_resize++;
+                else
+                    item_size++;
             }
             else{
                 put_str_fd(2,"ls: ");
@@ -59,30 +62,36 @@ char    **opendirChecker(char **dir, t_flags flags){
         if(ds == NULL){
             str = ft_pathjoin(".", dir[idx]);
             if(stat(str, &buf) == 0){
-                if (lstat(str, &buf) == 0){
-                    if (S_ISLNK(buf.st_mode)){   
-                        items[iidx].type = 1;
-                    }
-                    else {
-                        items[iidx].type = 0;
-                    }
+                if(S_ISDIR(buf.st_mode)){
+                    redir[didx] = ft_strdup(dir[idx]);
+                    didx++;
                 }
-                items[iidx] = set_StatAndName(buf, dir[idx]);
-                if (si[0] < num_size(buf.st_nlink))
-                    si[0] = num_size(buf.st_nlink);
-                struct passwd *pw = getpwuid(buf.st_uid);
-                items[iidx].str1 = pw->pw_name;
-                struct group  *gr = getgrgid(buf.st_gid);
-                items[iidx].str2 = gr->gr_name;
-                if (si[1] < ft_strlen(pw->pw_name))
-                    si[1] = ft_strlen(pw->pw_name);
-                if (si[2] < ft_strlen(gr->gr_name))
-                    si[2] = ft_strlen(gr->gr_name);
-                if (si[3] < num_size(buf.st_size))
-                    si[3] = num_size(buf.st_size);
-                if (si[4] < ft_strlen(dir[idx]))
-                    si[4] = ft_strlen(dir[idx]);
-                iidx++;
+                else {
+                    if (lstat(str, &buf) == 0){
+                        if (S_ISLNK(buf.st_mode)){   
+                            items[iidx].type = 1;
+                        }
+                        else {
+                            items[iidx].type = 0;
+                        }
+                    }
+                    items[iidx] = set_StatAndName(buf, dir[idx]);
+                    if (si[0] < num_size(buf.st_nlink))
+                        si[0] = num_size(buf.st_nlink);
+                    struct passwd *pw = getpwuid(buf.st_uid);
+                    items[iidx].str1 = pw->pw_name;
+                    struct group  *gr = getgrgid(buf.st_gid);
+                    items[iidx].str2 = gr->gr_name;
+                    if (si[1] < ft_strlen(pw->pw_name))
+                        si[1] = ft_strlen(pw->pw_name);
+                    if (si[2] < ft_strlen(gr->gr_name))
+                        si[2] = ft_strlen(gr->gr_name);
+                    if (si[3] < num_size(buf.st_size))
+                        si[3] = num_size(buf.st_size);
+                    if (si[4] < ft_strlen(dir[idx]))
+                        si[4] = ft_strlen(dir[idx]);
+                    iidx++;
+                }
             }
             free(str);
         }
@@ -101,10 +110,11 @@ char    **opendirChecker(char **dir, t_flags flags){
             items_revers(items, item_size);
         }
         item_execve(items, flags, item_size, si);
-        write(1, "\n", 1);
+        // if (dir_resize != 0)
+        //     write(1, "\n", 1);
         free(items);
     }
-    if(dir_size(dir) != dir_resize)
+    if(dir_size(dir) != dir_resize && dir_resize != 0)
         write(1, "\n", 1);
     return redir;
 }
@@ -145,7 +155,7 @@ int main(int argc, char **argv) {
     }
     dir_sort(dir2, flags, 0);
     while (dir2[idx] && dir2) {
-        if(dir_size(dir) != dir_size(dir2)){
+        if(dir_size(dir) != dir_size(dir2) || dir_size(dir) != 1){
             put_str_fd(1,dir2[idx]);
             put_str_fd(1,":\n");
         }

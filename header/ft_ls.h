@@ -46,7 +46,7 @@ char            *ft_strdup(char *str);
 char            **opendirChecker(char **dir, t_flags flags);
 void            process_directory(char *dir_path, t_flags flags, size_t idx, size_t size) ;
 
-void            ft_invalid_option();
+void            ft_invalid_option(char s);
 char            **flag_checker(int argc, char **argv, t_flags *flags);
 size_t          dir_size(char **dir);
 char            **Rdircheck(char *dir, t_flags flags);

@@ -1,7 +1,9 @@
 #include "../header/ft_ls.h"
 
-void ft_invalid_option(){
-    put_str_fd(2, "ls: invalid options\n");
+void ft_invalid_option(char s){
+    put_str_fd(2, "ls: illegal option -- ");
+    write(2, &s, 1);
+    write(2, "\n", 1);
     put_str_fd(2, "usage: ls [- a l r t R]\n");
     exit (1);
 }
@@ -34,7 +36,7 @@ char **flag_checker(int argc, char **argv, t_flags *flags){
                 else if(argv[i][y] == 't')
                     flags->t = 1;
                 else
-                    ft_invalid_option();
+                    ft_invalid_option(argv[i][y]);
                 y++;
             }
         }

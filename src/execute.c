@@ -243,16 +243,24 @@ void ls_execute(char *dir, t_flags flags){
     total = 0;
     size = size_check(dir, flags);
     if (size == 0){
+        if (ft_strlen(dir) > 2 && dir[0] == '.' && dir[1] == '/')
+            str = ft_replace(dir, 2);
+        else
+            str = ft_strdup(dir);
         put_str_fd(1,"ls: ");
-        put_str_fd(1, dir);
-        put_str_fd(1,": No such file or directory\n");
+        put_str_fd(1, str);
+        put_str_fd(1,": Permission denied\n");
         return ;
     }
     items = stat_List(dir, flags, size, &total, si);
     if (items == NULL){
+        if (ft_strlen(dir) > 2 && dir[0] == '.' && dir[1] == '/')
+            str = ft_replace(dir, 2);
+        else
+            str = ft_strdup(dir);
         put_str_fd(1,"ls: ");
-        put_str_fd(1, dir);
-        put_str_fd(1,": No such file or directory\n");
+        put_str_fd(1, str);
+        put_str_fd(1,": Permission denied\n");
         return ;
     }
     if(flags.l == 1){
