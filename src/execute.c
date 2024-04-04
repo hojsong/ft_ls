@@ -20,6 +20,7 @@ size_t size_check(char *dir, t_flags flags){
         str = ft_pathjoin(dir, obj->d_name);
         if (stat(str, &buf) == 0){
             if(flags.a == 0 && obj->d_name[0] == '.'){
+                free(str);
                 continue ;
             }         
             result++;    
@@ -111,6 +112,7 @@ t_item *stat_List(char *dir, t_flags flags, size_t size, size_t *total, size_t *
                 }
             }
             if(flags.a == 0 && obj->d_name[0] == '.'){
+                free(str);
                 continue ;
             }    
             result[idx] = set_StatAndName(buf,obj->d_name);
@@ -250,6 +252,7 @@ void ls_execute(char *dir, t_flags flags){
         put_str_fd(1,"ls: ");
         put_str_fd(1, str);
         put_str_fd(1,": Permission denied\n");
+        free(str);
         return ;
     }
     items = stat_List(dir, flags, size, &total, si);
@@ -261,6 +264,7 @@ void ls_execute(char *dir, t_flags flags){
         put_str_fd(1,"ls: ");
         put_str_fd(1, str);
         put_str_fd(1,": Permission denied\n");
+        free(str);
         return ;
     }
     if(flags.l == 1){

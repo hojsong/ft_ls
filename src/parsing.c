@@ -81,6 +81,8 @@ char **Rdircheck(char *dir, t_flags flags){
     result = malloc(sizeof(char *) * 2);
     if(ft_strcmp(dir, ".") == 0)
         result[0] = ft_strdup(dir);
+    else if (dir[0] == '/')
+        result[0] = ft_strdup(dir);
     else 
         result[0] = ft_pathjoin(".", dir);
     result[1] = NULL;
@@ -101,6 +103,7 @@ char **Rdircheck(char *dir, t_flags flags){
                 else
                 {
                     if(flags.a == 0 && obj->d_name[0] == '.'){
+                        free(str);
                         continue ;
                     }                
                     else if(S_ISDIR(buf.st_mode) && \

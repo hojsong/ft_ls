@@ -137,6 +137,7 @@ void process_directory(char *dir_path, t_flags flags, size_t idx, size_t size) {
         if(i != 0)
             process_directory(dir2[i], flags, 1, 0);
         i++;
+        
     }
     strAllfree(dir2);
 }
@@ -166,6 +167,7 @@ int main(int argc, char **argv) {
     }
     strAllfree(dir2);
     // system("leaks ft_ls");
+    return (0);
 }
 
 

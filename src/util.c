@@ -161,27 +161,21 @@ void printPermissions(mode_t mode, char *str, struct stat *buf) {
     }
     if (mode & S_IRUSR) permissions[1] = 'r';
     if (mode & S_IWUSR) permissions[2] = 'w';
-    if (mode & S_IXUSR) permissions[3] = 'x';
-    if ((mode & S_ISUID) && permissions[3] == 'x')
-        permissions[3] = 's';
-    else{
-        if (mode & S_ISUID) permissions[3] = 'S';
-    }
+    if (mode & S_IXUSR && mode & S_ISUID) permissions[3] = 's';
+    else if (mode & S_ISUID) permissions[3] = 'S';
+    else if (mode & S_IXUSR) permissions[3] = 'x';
+
     if (mode & S_IRGRP) permissions[4] = 'r';
     if (mode & S_IWGRP) permissions[5] = 'w';
-    if (mode & S_IXGRP) permissions[6] = 'x';
-    if ((mode & S_ISGID) && permissions[6] == 'x')
-        permissions[6] = 's';
-    else{
-        if (mode & S_ISGID) permissions[6] = 'S';
-    }
+    if (mode & S_IXGRP && mode & S_ISGID) permissions[6] = 's';
+    else if (mode & S_ISGID) permissions[6] = 'S';
+    else if (mode & S_IXGRP) permissions[6] = 'x';
+
     if (mode & S_IROTH) permissions[7] = 'r';
     if (mode & S_IWOTH) permissions[8] = 'w';
-    if (mode & S_IXOTH) permissions[9] = 'x';
-    if ((mode & S_ISVTX) && permissions[6] == 'x')
-        permissions[6] = 't';
-    else{
-        if (mode & S_ISVTX) permissions[6] = 'T';
-    }
-    write(STDOUT_FILENO, permissions, sizeof(permissions));
+    if (mode & S_IXOTH && mode & S_ISVTX) permissions[9] = 't';
+    else if (mode & S_ISVTX) permissions[9] = 'T';
+    else if (mode & S_ISVTX) permissions[9] = 'x';
+
+    write(1, permissions, sizeof(permissions));
 }
