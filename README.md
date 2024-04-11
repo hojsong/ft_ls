@@ -13,7 +13,6 @@ Option -t: Lists files sorted by modification time.
 Functions Used
 File and Directory Handling: opendir, readdir, closedir, stat, lstat, readlink 7
 User and Group Information: getpwuid, getgrgid
-Extended Attributes Handling: listxattr, getxattr
 Time Related: time, ctime
 Memory Management: malloc, free
 Error Handling: perror, strerror

@@ -4,7 +4,6 @@
 #include <sys/types.h>   // opendir, stat, lstat, getpwuid, getgrgid, listxattr, getxattr
 #include <dirent.h>      // opendir, readdir, closedir
 #include <sys/stat.h>    // stat, lstat
-#include <sys/xattr.h>   // listxattr, getxattr
 #include <pwd.h>         // getpwuid
 #include <grp.h>         // getgrgid
 #include <time.h>        // time, ctime
