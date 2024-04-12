@@ -6,7 +6,7 @@
 /*   By: hojsong <hojsong@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 20:39:22 by hojsong           #+#    #+#             */
-/*   Updated: 2024/03/29 20:48:50 by hojsong          ###   ########.fr       */
+/*   Updated: 2024/04/12 15:59:05 by hojsong          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,7 @@ void printPermissions(mode_t mode, char *str, struct stat *buf) {
     if (mode & S_IWOTH) permissions[8] = 'w';
     if (mode & S_IXOTH && mode & S_ISVTX) permissions[9] = 't';
     else if (mode & S_ISVTX) permissions[9] = 'T';
-    else if (mode & S_ISVTX) permissions[9] = 'x';
+    else if (mode & S_IXOTH) permissions[9] = 'x';
 
     write(1, permissions, sizeof(permissions));
 }
