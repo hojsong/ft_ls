@@ -46,11 +46,8 @@ char    **opendirChecker(char **dir, t_flags flags){
     if(dir_resize == 0 && item_size == 0){
         return NULL;
     }
-    if(dir_resize != dir_size(dir)){
+    else if(dir_resize != 0){
         redir = malloc(sizeof(char *) * (dir_resize + 1));
-    }
-    else {
-        return dir;
     }
     if(item_size > 0){
         items = malloc(sizeof(t_item) * (item_size));
@@ -158,7 +155,7 @@ int main(int argc, char **argv) {
     t_flags flags;
     size_t idx;
 
-    atexit(f);
+    // atexit(f);
     idx = 0;
     dir = flag_checker(argc, argv, &flags);
     dir2 = opendirChecker(dir, flags);
@@ -177,8 +174,10 @@ int main(int argc, char **argv) {
             write(1, "\n", 1);
         idx++;
     }
-    strAllfree(dir);
-    strAllfree(dir2);
+    if(dir)
+        strAllfree(dir);
+    if(dir2)
+        strAllfree(dir2);
     return (0);
 }
 
