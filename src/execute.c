@@ -18,7 +18,7 @@ size_t size_check(char *dir, t_flags flags){
         if(obj == NULL)
             break;
         str = ft_pathjoin(dir, obj->d_name);
-        if (stat(str, &buf) == 0){
+        if (stat(str, &buf) == 0 || lstat(str, &buf) == 0){
             if(flags.a == 0 && obj->d_name[0] == '.'){
                 free(str);
                 continue ;
@@ -100,7 +100,7 @@ t_item *stat_List(char *dir, t_flags flags, size_t size, size_t *total, size_t *
         if(obj == NULL)
             break;
         str = ft_pathjoin(dir, obj->d_name);
-        if (stat(str, &buf) == 0){
+        if (stat(str, &buf) == 0 || lstat(str, &buf) == 0){
             if (lstat(str, &buf) == 0){
                if (S_ISLNK(buf.st_mode)){   
                     *total += 8;

@@ -25,6 +25,12 @@ char    **opendirChecker(char **dir, t_flags flags){
                 else
                     item_size++;
             }
+            else if(lstat(dir[idx], &buf) == 0){
+                if(S_ISDIR(buf.st_mode))
+                    dir_resize++;
+                else
+                    item_size++;
+            }
             else{
                 put_str_fd(2,"ls: ");
                 put_str_fd(2, dir[idx]);
@@ -61,7 +67,7 @@ char    **opendirChecker(char **dir, t_flags flags){
         ds = opendir(dir[idx]);
         if(ds == NULL){
             str = ft_pathjoin(".", dir[idx]);
-            if(stat(str, &buf) == 0){
+            if(stat(str, &buf) == 0 || lstat(str, &buf) == 0){
                 if(S_ISDIR(buf.st_mode)){
                     redir[didx] = ft_strdup(dir[idx]);
                     didx++;

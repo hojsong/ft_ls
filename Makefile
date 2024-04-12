@@ -16,17 +16,16 @@ OBJS = $(SRCS:.c=.o)
 
 DEPS = $(SRCS:.c=.d)
 
--include $(DEPS)
 
 .DEFAULT_GOAL : all
 
 all : $(NAME)
 	
-# .c.o :
-# 	$(CC) $(CFLAG) -I $(HEAD) -c $< -o $@ 
+.c.o : $(SRCS)
+	$(CC) $(CFLAGS) -I $(HEAD) -c $< -o $@ 
 
 $(NAME) : $(OBJS)
-	$(CC) $(CFLAG) -o $(NAME) $(OBJS)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
 
 clean :
 	rm -rf $(OBJS) $(DEPS)
@@ -35,5 +34,7 @@ fclean : clean
 	rm -rf $(NAME)
 
 re : fclean all
+
+-include $(DEPS)
 
 .PHONY : all re clean fclean bonus
