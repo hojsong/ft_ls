@@ -43,6 +43,9 @@ char    **opendirChecker(char **dir, t_flags flags){
         }
         idx++;
     }
+    if(dir_resize == 0 && item_size == 0){
+        return NULL;
+    }
     if(dir_resize != dir_size(dir)){
         redir = malloc(sizeof(char *) * (dir_resize + 1));
     }
@@ -51,9 +54,6 @@ char    **opendirChecker(char **dir, t_flags flags){
     }
     if(item_size > 0){
         items = malloc(sizeof(t_item) * (item_size));
-    }
-    if(dir_resize == 0 && item_size == 0){
-        return NULL;
     }
     idx = 0;
     iidx = 0;
@@ -148,11 +148,17 @@ void process_directory(char *dir_path, t_flags flags, size_t idx, size_t size) {
     strAllfree(dir2);
 }
 
+void    f()
+{
+    system("leaks ft_ls");
+}
+
 int main(int argc, char **argv) {
     char **dir, **dir2;
     t_flags flags;
     size_t idx;
 
+    atexit(f);
     idx = 0;
     dir = flag_checker(argc, argv, &flags);
     dir2 = opendirChecker(dir, flags);
@@ -171,8 +177,8 @@ int main(int argc, char **argv) {
             write(1, "\n", 1);
         idx++;
     }
+    strAllfree(dir);
     strAllfree(dir2);
-    // system("leaks ft_ls");
     return (0);
 }
 
