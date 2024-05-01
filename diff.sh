@@ -1,10 +1,10 @@
 make
 
 export a1=-arRlt
-export a2=-lr
+export a2=-Rtl
 export b="."
 export c="Makefile ft_ls diff.sh src/libft.c header src"
-export d="Makefile ."
+export d=""
 
 touch ../a{1..6} ../b{1..6} ../c{1..6} 
 
@@ -47,10 +47,10 @@ echo cat ../c4
 cat ../c4
 echo
 
-echo "./ft_ls $a1 $c > ../a5"
-./ft_ls $a1 $c > ../a5
-echo "ls $a1 $c > ../b5"
-ls $a1 $c > ../b5
+echo "./ft_ls $a1 $d > ../a5"
+./ft_ls $a1 $d > ../a5
+echo "ls $a1 $d > ../b5"
+ls $a1 $d > ../b5
 echo "diff -s ../a5 ../b5 > ../c5"
 diff -s ../a5 ../b5 > ../c5
 echo cat ../c5

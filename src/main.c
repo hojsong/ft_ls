@@ -145,10 +145,10 @@ void process_directory(char *dir_path, t_flags flags, size_t idx, size_t size) {
     strAllfree(dir2);
 }
 
-void    f()
-{
-    system("leaks ft_ls");
-}
+// void    f()
+// {
+//     system("leaks ft_ls");
+// }
 
 int main(int argc, char **argv) {
     char **dir, **dir2;
