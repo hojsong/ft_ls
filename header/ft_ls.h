@@ -34,7 +34,7 @@ void            sort_item(t_item *items, size_t size, t_flags flags);
 t_item          *stat_List(char *dir, t_flags flags, size_t size, size_t *total, size_t *si);
 void            items_revers(t_item *items, size_t size);
 void            item_execve(t_item *items, t_flags flags, size_t item_size, size_t *si);
-void            ls_execute(char *dir, t_flags flags);
+int             ls_execute(char *dir, t_flags flags);
 
 size_t          ft_strlen(const char* str);
 int             ft_strcmp(char *str1, char *str2);
@@ -44,6 +44,7 @@ char            *ft_strdup(char *str);
 
 char            **opendirChecker(char **dir, t_flags flags);
 void            process_directory(char *dir_path, t_flags flags, size_t idx, size_t size) ;
+size_t          Permission_check(char *dir, t_flags flags);
 
 void            ft_invalid_option(char s);
 char            **flag_checker(int argc, char **argv, t_flags *flags);

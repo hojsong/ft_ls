@@ -123,9 +123,17 @@ char    **opendirChecker(char **dir, t_flags flags){
 }
 
 void process_directory(char *dir_path, t_flags flags, size_t idx, size_t size) {
-    char **dir2;
-    size_t i;
+    char    **dir2;
+    size_t  i;
+    int     x;
 
+    if (Permission_check(dir_path, flags) == 0)
+    {
+        put_str_fd(2,"ls: ");
+        put_str_fd(2, dir_path);
+        put_str_fd(2,": Permission denied\n");
+        return ;
+    }
     i = idx;
     dir2 = Rdircheck(dir_path, flags);
     dir_sort(dir2, flags, 1);
@@ -134,10 +142,10 @@ void process_directory(char *dir_path, t_flags flags, size_t idx, size_t size) {
             put_str_fd(1, dir2[i]);
             put_str_fd(1,":\n");
         }
-        ls_execute(dir2[i], flags);
+        x = ls_execute(dir2[i], flags);
         if((size == 0 || dir2[i + 1]))
             write(1,"\n",1);
-        if(i != 0)
+        if(i != 0 && x)
             process_directory(dir2[i], flags, 1, 0);
         i++;
         
@@ -145,17 +153,17 @@ void process_directory(char *dir_path, t_flags flags, size_t idx, size_t size) {
     strAllfree(dir2);
 }
 
-// void    f()
-// {
-//     system("leaks ft_ls");
-// }
+void    f()
+{
+    system("leaks ft_ls");
+}
 
 int main(int argc, char **argv) {
     char **dir, **dir2;
     t_flags flags;
     size_t idx;
 
-    // atexit(f);
+    atexit(f);
     idx = 0;
     dir = flag_checker(argc, argv, &flags);
     dir2 = opendirChecker(dir, flags);

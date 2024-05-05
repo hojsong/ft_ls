@@ -2,6 +2,36 @@
 
 int cal;
 
+size_t  Permission_check(char *dir, t_flags flags){
+    char *str;
+    DIR *ds;
+    struct stat buf;
+    size_t result;
+
+    result = 0;
+    ds = opendir(dir);
+    if(ds == NULL){
+        return result;
+    }
+    while(1){
+        struct dirent *obj = readdir(ds);
+        if(obj == NULL)
+            break;
+        str = ft_pathjoin(dir, obj->d_name);
+        if (stat(str, &buf) == 0 || lstat(str, &buf) == 0){
+            if(flags.a == 0 && obj->d_name[0] == '.'){
+                result++;  
+                free(str);
+                continue ;
+            }         
+        }
+        result++;  
+        free(str);
+    }
+    closedir(ds);
+    return (result);
+}
+
 size_t size_check(char *dir, t_flags flags){
     char *str;
     DIR *ds;
@@ -23,8 +53,8 @@ size_t size_check(char *dir, t_flags flags){
                 free(str);
                 continue ;
             }         
-            result++;    
         }
+        result++;  
         free(str);
     }
     closedir(ds);
@@ -34,7 +64,7 @@ size_t size_check(char *dir, t_flags flags){
 t_item set_StatAndName(struct stat buf, char *name){
     t_item result;
 
-    result.name = name;
+    result.name = ft_strdup(name);
     result.status = buf;
     result.str1 = NULL;
     result.str2 = NULL;
@@ -92,9 +122,14 @@ t_item *stat_List(char *dir, t_flags flags, size_t size, size_t *total, size_t *
     si[3] = 0;
     si[4] = 0;
     result = malloc(sizeof(t_item) * (size));
+    if (result == NULL)
+        return NULL;
     ds = opendir(dir);
     if(ds == NULL)
+    {
+        free (result);
         return NULL;
+    }
     while(1){
         struct dirent *obj = readdir(ds);
         if(obj == NULL)
@@ -158,10 +193,17 @@ void item_execve(t_item *items, t_flags flags, size_t item_size, size_t *si){
     char *str;
 
     size = item_size;
-    size++;
-    lc = size / cal;
+    if (flags.l == 0)
+    {
+        lc = (size / cal);
+        if (size % cal)
+            lc ++;
+        lc *= cal;
+    }
+    else
+        lc = size;
     idx = 0;
-    while(idx < size - 1){
+    while(idx < lc){
         if(flags.l == 1){
             ll = idx;
             str = items[ll].name;
@@ -217,56 +259,53 @@ void item_execve(t_item *items, t_flags flags, size_t item_size, size_t *si){
                     } 
                 }
             }
+            free(items[ll].name);
             put_str_fd(1, "\n");
         }
         else if(flags.l == 0){
-            ll = (idx / (size / lc)) + (idx % (size / lc) * lc);
-            put_str_fd(1, items[ll].name);
-            x = ft_strlen(items[ll].name);
-            while(x++ < si[4] + 6){
+            ll = (idx / cal) + ((idx % cal) * (lc / cal));
+            if (ll < size)
+            {
+                put_str_fd(1, items[ll].name);
+                x = ft_strlen(items[ll].name);
+                while(x++ < si[4] + 6){
+                    write(1, " ", 1);
+                }
                 write(1, " ", 1);
+                free(items[ll].name);
             }
-            write(1, " ", 1);
-            if (((idx + 1) % ((size) / lc) == 0) && idx + 1 != size)
+            if ((idx + 1) % (cal) == 0)
                 write(1, "\n", 1);
         }
         idx++;
     }
-    if((idx) % (size / lc) != 0 && flags.R == 1 && flags.l == 0)
-        write(1, "\n", 1);
 }
 
-void ls_execute(char *dir, t_flags flags){
+int ls_execute(char *dir, t_flags flags){
     size_t size, total;
     size_t si[5], idx, lc, x, al, ll;
     t_item *items;
     char *str;
 
     total = 0;
+    if (Permission_check(dir, flags) == 0)
+    {
+        if (ft_strlen(dir) > 2 && dir[0] == '.' && dir[1] == '/')
+            str = ft_replace(dir, 2);
+        else
+            str = ft_strdup(dir);
+        put_str_fd(2,"ls: ");
+        put_str_fd(2, str);
+        put_str_fd(2,": Permission denied\n");
+        free(str);
+        return (0);
+    }
     size = size_check(dir, flags);
-    if (size == 0){
-        if (ft_strlen(dir) > 2 && dir[0] == '.' && dir[1] == '/')
-            str = ft_replace(dir, 2);
-        else
-            str = ft_strdup(dir);
-        put_str_fd(1,"ls: ");
-        put_str_fd(1, str);
-        put_str_fd(1,": Permission denied\n");
-        free(str);
-        return ;
-    }
+    if (size == 0)
+        return (0);
     items = stat_List(dir, flags, size, &total, si);
-    if (items == NULL){
-        if (ft_strlen(dir) > 2 && dir[0] == '.' && dir[1] == '/')
-            str = ft_replace(dir, 2);
-        else
-            str = ft_strdup(dir);
-        put_str_fd(1,"ls: ");
-        put_str_fd(1, str);
-        put_str_fd(1,": Permission denied\n");
-        free(str);
-        return ;
-    }
+    if (items == NULL)
+        return (0);
     if(flags.l == 1){
         put_str_fd(1,"total ");
         put_num_fd(1, total);
@@ -277,10 +316,18 @@ void ls_execute(char *dir, t_flags flags){
     }
     // item_execve(items, flags, size, si);
 
-    size++;
-    lc = size / cal;
+    if (flags.l == 0)
+    {
+        lc = (size / cal);
+        if (size % cal)
+            lc ++;
+        lc *= cal;
+    }
+    else
+        lc = size;
+    // size--;
     idx = 0;
-    while(idx < size - 1){
+    while(idx < lc){
         if(flags.l == 1){
             ll = idx;
             str = ft_pathjoin(dir, items[ll].name);
@@ -322,23 +369,27 @@ void ls_execute(char *dir, t_flags flags){
                     } 
                 }
             }
+            free(items[ll].name);
             free(str);
             put_str_fd(1, "\n");
         }
         else if(flags.l == 0){
-            ll = (idx / (size / lc)) + (idx % (size / lc) * lc);
-            put_str_fd(1, items[ll].name);
-            x = ft_strlen(items[ll].name);
-            while(x++ < si[4] + 6){
+            ll = (idx / cal) + ((idx % cal) * (lc / cal));
+            if (ll < size)
+            {
+                put_str_fd(1, items[ll].name);
+                x = ft_strlen(items[ll].name);
+                while(x++ < si[4] + 6){
+                    write(1, " ", 1);
+                }
                 write(1, " ", 1);
+                free(items[ll].name);
             }
-            write(1, " ", 1);
-            if (((idx + 1) % ((size) / lc) == 0) && idx + 1 != size)
+            if ((idx + 1) % (cal) == 0)
                 write(1, "\n", 1);
         }
         idx++;
     }
-    if((idx) % (size / lc) != 0 && flags.R == 1 && flags.l == 0)
-        write(1, "\n", 1);
     free(items);
+    return (1);
 }

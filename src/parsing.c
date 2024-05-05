@@ -83,7 +83,9 @@ char **Rdircheck(char *dir, t_flags flags){
         result[0] = ft_strdup(dir);
     else if (dir[0] == '/')
         result[0] = ft_strdup(dir);
-    else 
+    else if (dir[0] == '.' && dir[1] == '/')
+        result[0] = ft_strdup(dir);
+    else
         result[0] = ft_pathjoin(".", dir);
     result[1] = NULL;
     if (flags.R == 0){
@@ -125,50 +127,92 @@ void dir_sort(char **dir, t_flags flags, int its){
     int  idx, dest;
     int  size;
     DIR     *ds;
-    long  *maxtime;
+    unsigned long  *maxtime;
     struct stat buf;
     char    *swapdir;
     char    *str;
-    long  swaptime;
+    unsigned long  swaptime;
 
     size = (int)dir_size(dir);
     if (size < 2)
         return ;
     idx = 0;
     if(flags.t == 1){
-        maxtime = malloc(sizeof(long) * (size));
-        while (dir && dir[idx]){
-            ds = opendir(dir[idx]);
-            if(ds == NULL){
-                maxtime[idx] = 0;
+        maxtime = malloc(sizeof(unsigned long) * (size));
+        if (its == 0)
+        {
+            while (dir && dir[idx]){
+                ds = opendir(dir[idx]);
+                if(ds == NULL){
+                    maxtime[idx] = 0;
+                    idx++;
+                    continue;
+                }
+                while(1){
+                    struct dirent *obj = readdir(ds);
+                    if(obj == NULL)
+                        break;
+                    str = ft_pathjoin(dir[idx],obj->d_name);
+                    if (stat(str, &buf) == 0){
+                        if(ft_strcmp(obj->d_name, ".") == 0){
+                            maxtime[idx] = buf.st_mtime;
+                            free(str);
+                            str = NULL;
+                            break;
+                        }
+                    }
+                    free(str);
+                    str = NULL;
+                }
+                closedir(ds);
                 idx++;
-                continue;
             }
+        }
+        else
+        {
+            ds = opendir(dir[0]);
             while(1){
                 struct dirent *obj = readdir(ds);
                 if(obj == NULL)
                     break;
-                str = ft_pathjoin(dir[idx],obj->d_name);
+                str = ft_pathjoin(dir[0], obj->d_name);
                 if (stat(str, &buf) == 0){
-                    if(ft_strcmp(obj->d_name, ".") == 0){
-                        maxtime[idx] = buf.st_mtime;
-                        free(str);
-                        str = NULL;
-                        break;
+                    if (lstat(str, &buf) == 0) {
+                        if (S_ISLNK(buf.st_mode)) {    
+                        }
+                        else
+                        {
+                            if(obj->d_name[0] == '.' && obj->d_name[1] == '\0'){
+                                maxtime[0] = buf.st_mtime;
+                                free(str);
+                                continue ;
+                            }                
+                            else if(S_ISDIR(buf.st_mode) && \
+                                ft_strcmp(obj->d_name, ".") && ft_strcmp(obj->d_name, "..")){
+                                dest = 0;
+                                while (dest < size)
+                                {
+                                    if (ft_strcmp(dir[dest], str) == 0)
+                                        break;
+                                    dest++;
+                                }
+                                if (dest< size)
+                                    maxtime[dest] = buf.st_mtime;
+                            }
+                        }
                     }
                 }
                 free(str);
                 str = NULL;
             }
             closedir(ds);
-            idx++;
         }
         idx = 0;
         dest = 1;
+        if (its == 0)
+            dest = 0;
         while (++idx < size){
             int i = idx - 1;
-            if (its == 0)
-                dest = 0;
             while (i >= dest){
                 if(maxtime[i] < maxtime[i + 1]){
                     swapdir = dir[i];
@@ -203,9 +247,8 @@ void dir_sort(char **dir, t_flags flags, int its){
             }
         }
     }
-    if (flags.x != 1 || size < 2){
+    if (flags.x != 1 || size < 2)
         return ;
-    }
     idx = 0;
     dest = 1;
     if (its == 0){
@@ -217,7 +260,7 @@ void dir_sort(char **dir, t_flags flags, int its){
         }
     }
     else {
-        while (idx < (size  / 2)){
+        while (idx < ((size - 1) / 2)){
             swapdir = dir[idx + dest];
             dir[idx + dest] = dir[size - idx - dest];
             dir[size - idx - dest] = swapdir;

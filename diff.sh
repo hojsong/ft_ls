@@ -1,7 +1,7 @@
-make
+make re
 
 export a1=-arRlt
-export a2=-Rtl
+export a2=-Rla
 export b="."
 export c="Makefile ft_ls diff.sh src/libft.c header src"
 export d=""
