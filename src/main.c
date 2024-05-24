@@ -153,17 +153,17 @@ void process_directory(char *dir_path, t_flags flags, size_t idx, size_t size) {
     strAllfree(dir2);
 }
 
-void    f()
-{
-    system("leaks ft_ls");
-}
+// void    f()
+// {
+//     system("leaks ft_ls");
+// }
 
 int main(int argc, char **argv) {
     char **dir, **dir2;
     t_flags flags;
     size_t idx;
 
-    atexit(f);
+    // atexit(f);
     idx = 0;
     dir = flag_checker(argc, argv, &flags);
     dir2 = opendirChecker(dir, flags);
