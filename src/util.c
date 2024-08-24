@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../header/ft_ls.h"
+#include <sys/xattr.h>
 
 struct dirent **reObj(struct dirent **re,  struct dirent *obj){
     struct dirent **result;
@@ -143,7 +144,7 @@ char    **addDir(char **dir, char *nowdir, char *d_name, size_t idx){
 }
 
 void printPermissions(mode_t mode, char *str, struct stat *buf) {
-    char permissions[11] = "---------- ";
+    char permissions[12] = "---------- ";
     permissions[10] = ' ';
 
     if (lstat(str, buf) == 0){
@@ -176,6 +177,8 @@ void printPermissions(mode_t mode, char *str, struct stat *buf) {
     if (mode & S_IXOTH && mode & S_ISVTX) permissions[9] = 't';
     else if (mode & S_ISVTX) permissions[9] = 'T';
     else if (mode & S_IXOTH) permissions[9] = 'x';
+    
+    if (mode & S_IATTR) permissions[10] = '@'; 
 
     write(1, permissions, sizeof(permissions));
 }
