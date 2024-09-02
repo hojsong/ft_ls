@@ -1,7 +1,6 @@
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror -MMD -MP
-#  -fsanitize=address -g3
+CFLAGS = -Wall -Wextra -Werror  -fsanitize=address -g3
 
 NAME = ft_ls
 

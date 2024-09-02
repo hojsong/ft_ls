@@ -6,7 +6,7 @@
 /*   By: hojsong <hojsong@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 20:39:22 by hojsong           #+#    #+#             */
-/*   Updated: 2024/04/12 15:59:05 by hojsong          ###   ########.fr       */
+/*   Updated: 2024/09/02 09:40:05 by hojsong          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ char    **addDir(char **dir, char *nowdir, char *d_name, size_t idx){
 }
 
 void printPermissions(mode_t mode, char *str, struct stat *buf) {
-    char permissions[12] = "---------- ";
+    char permissions[11] = "---------- ";
     permissions[10] = ' ';
 
     if (lstat(str, buf) == 0){

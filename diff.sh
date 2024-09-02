@@ -6,7 +6,7 @@ export b="."
 export c="Makefile ft_ls diff.sh src/libft.c header src"
 export d=""
 
-touch ../a{1..6} ../b{1..6} ../c{1..6} 
+touch ../a{1..6} ../b{1..6} ../c{1..6}
 
 echo "./ft_ls $a1 $b > ../a1"
 ./ft_ls $a1 $b > ../a1
